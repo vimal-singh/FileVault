@@ -1,0 +1,37 @@
+## FileVault — Git Ignore
+
+# Build output
+bin/
+obj/
+out/
+
+# VS / Rider IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# Local environment secrets — never commit these
+appsettings.Local.json
+appsettings.*.Local.json
+*.pfx
+*.key
+
+# Docker volumes
+sqlserver_data/
+
+# Local file storage (runtime uploads)
+/storage/
+
+# Test results
+TestResults/
+*.trx
+*.coveragexml
+
+# NuGet
+*.nupkg
+.nuget/
+
+# OS
+.DS_Store
+Thumbs.db
