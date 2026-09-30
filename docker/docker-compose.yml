@@ -1,54 +1,33 @@
 services:
 
   sqlserver:
+    container_name: filevault-sqlserver
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      SA_PASSWORD: "FileVault@2024!"
+      MSSQL_SA_PASSWORD: "FileVault@2024!"
       ACCEPT_EULA: "Y"
     ports:
-      - "1433:1433"
+      - "11433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
 
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-
-  kafka:
-    image: confluentinc/cp-kafka:7.5.0
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
   api:
+    container_name: filevault-api
     build:
       context: ..
       dockerfile: src/FileVault.API/Dockerfile
     ports:
-      - "5000:8080"
+      - "8080:8080"
     depends_on:
       - sqlserver
-      - redis
-      - kafka
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=Server=sqlserver;Database=FileVaultDb;User Id=sa;Password=FileVault@2024!;TrustServerCertificate=True
-      - Redis__ConnectionString=redis:6379
-      - Kafka__BootstrapServers=kafka:9092
-      - Storage__Provider=Local
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=FileVaultDb;User Id=sa;Password=FileVault@2024!;TrustServerCertificate=True
+      - StorageSettings__Provider=Local
+      - StorageSettings__Local__RootPath=/app/uploads
+    volumes:
+      - file_uploads:/app/uploads
 
 volumes:
   sqlserver_data:
+  file_uploads:

@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FileVault.Domain\FileVault.Domain.csproj" />
     <ProjectReference Include="..\..\src\FileVault.Application\FileVault.Application.csproj" />
+    <ProjectReference Include="..\..\src\FileVault.Infrastructure\FileVault.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
